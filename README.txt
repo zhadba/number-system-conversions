@@ -12,7 +12,7 @@ conversions between:
  - Any octal number between 0 and 777 into decimal.
  - Any octal number between 0 and 777 into binary.
  - Any BCD representation from 0 to 1001 1001 1001 1001 into decimal.
- - Any Alphanumeric representation from A-Z into ASCII 7-bit code.
+ - Any Alphanumeric representation from A-Z and 0-9 into ASCII 7-bit code.
  - Any ASCII 7-bit code into Alphanumeric representation.
 
 The second primary file is designed to employ a parity error detection method for any 
