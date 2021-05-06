@@ -5,6 +5,16 @@ class Converter:
     def __init__(self):
         pass
 
+    def read_cheat_sheet(self, directory):
+        csv_dictionary_list = []
+        with open(directory, newline='') as file:
+            reader = csv.reader(file)
+
+            for row in reader:
+                csv_dictionary_list.append({'key': row[0], 'value': row[1]})
+            
+        return csv_dictionary_list
+
     def decimal_to_binary(self, raw_decimal_input):
         decimal_input = int(raw_decimal_input) #replace this with actual user input
 
@@ -57,10 +67,12 @@ class Converter:
             position_8 = '0'
 
         binary_output = f'{position_1}{position_2}{position_3}{position_4}{position_5}{position_6}{position_7}{position_8}'
-        print (f'Decimal input: {raw_decimal_input}\nBinary output (8 bit): {binary_output}')
+        return binary_output
 
-    def decimal_to_octal(self):
-        pass
+    def decimal_to_octal(self, raw_decimal_input):
+        binary_representation = self.decimal_to_binary(raw_decimal_input)
+        octal_output = self.binary_to_octal(binary_representation)
+        print(octal_output)
 
     def decimal_to_hex(self):
         pass
@@ -72,25 +84,29 @@ class Converter:
         pass
 
     def binary_to_octal(self, raw_binary_input):
+        conversions = self.read_cheat_sheet('Octal_Cheat_Sheet.csv')
         binary_input = list(raw_binary_input)
 
-        if len(binary_input) in [3, 6, 9]:
-            print('good')
-
-        elif len(binary_input) in [2, 5, 8]:
-            binary_input.insert(0, '0')
-            print(binary_input)
-
+        if len(binary_input) in [2, 5, 8]:
+            binary_input = ['0'] + binary_input
         elif len(binary_input) in [1, 4, 7]:
-            binary_input.insert(0, '0')
-            binary_input.insert(0, '0')
-            print(binary_input)
+            binary_input = ['0', '0'] + binary_input
 
-        else:
-            print('bad, extraneous value') #delete this later, only here for testing
+        binary_string = ''
+        binary_split_string = []
+        octal_output = []
 
-        
+        binary_string = (binary_string.join(binary_input))
+        for index in range(0, len(binary_string), 3):
+            binary_split_string.append(binary_string[index : index + 3])
 
+        for conversion_pair in conversions:
+            for binary_group in binary_split_string:
+                if str(binary_group) in conversion_pair['key']:
+                    octal_output.append(conversion_pair['value'])
+
+        return ''.join(octal_output)
+            
     def binary_to_hex(self):
         pass
 
@@ -118,7 +134,10 @@ class Converter:
 class Menu:
     pass
 
+class View:
+    pass
+
 class Controller:
     pass
 
-Converter().binary_to_octal('1111')
+Converter().decimal_to_octal('46')
