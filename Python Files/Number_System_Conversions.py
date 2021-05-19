@@ -6,77 +6,42 @@ class Converter:
         pass
 
     def read_cheat_sheet(self, directory):
-        csv_dictionary_list = []
+        conversion_map = []
         with open(directory, newline='') as file:
             reader = csv.reader(file)
 
             for row in reader:
-                csv_dictionary_list.append({'key': row[0], 'value': row[1]})
+                conversion_map.append({'key': row[0], 'value': row[1]})
             
-        return csv_dictionary_list
+        return conversion_map
 
     def decimal_to_binary(self, raw_decimal_input):
-        decimal_input = int(raw_decimal_input) #replace this with actual user input
+        base_2_iterations = [128, 64, 32, 16, 8, 4, 2, 1]
+        decimal_input = int(raw_decimal_input)
+        binary_output = []
 
-        if (decimal_input - 128) > 0 or (decimal_input - 128) == 0:
-            decimal_input = (decimal_input - 128)
-            position_1 = '1' #position 1 represents the MSB in the binary sequence
-        else:
-            position_1 = '0'
+        for iteration in base_2_iterations:
+            position_x = ''
+            if (decimal_input - iteration) > 0 or (decimal_input - iteration) == 0:
+                decimal_input = (decimal_input - iteration)
+                position_x = '1'
+            else:
+                position_x = '0'
 
-        if (decimal_input - 64) > 0 or (decimal_input - 64) == 0:
-            decimal_input = (decimal_input - 64)
-            position_2 = '1'
-        else:
-            position_2 = '0'
+            binary_output.append(position_x)
         
-        if (decimal_input - 32) > 0 or (decimal_input - 32) == 0:
-            decimal_input = (decimal_input - 32)
-            position_3 = '1'
-        else:
-            position_3 = '0'
-
-        if (decimal_input - 16) > 0 or (decimal_input - 16) == 0:
-            decimal_input = (decimal_input - 16)
-            position_4 = '1'
-        else:
-            position_4 = '0'
-
-        if (decimal_input - 8) > 0 or (decimal_input - 8) == 0:
-            decimal_input = (decimal_input - 8)
-            position_5 = '1'
-        else:
-            position_5 = '0'
-
-        if (decimal_input - 4) > 0 or (decimal_input - 4) == 0:
-            decimal_input = (decimal_input - 4)
-            position_6 = '1'
-        else:
-            position_6 = '0'
-
-        if (decimal_input - 2) > 0 or (decimal_input - 2) == 0:
-            decimal_input = (decimal_input - 2)
-            position_7 = '1'
-        else:
-            position_7 = '0'
-
-        if (decimal_input - 1) > 0 or (decimal_input - 1) == 0:
-            decimal_input = (decimal_input - 1)
-            position_8 = '1' #position 8 represents the LSB in the binary sequence
-        else:
-            position_8 = '0'
-
-        binary_output = f'{position_1}{position_2}{position_3}{position_4}{position_5}{position_6}{position_7}{position_8}'
-        return binary_output
+        return ''.join(binary_output)
 
     def decimal_to_octal(self, raw_decimal_input):
         binary_representation = self.decimal_to_binary(raw_decimal_input)
         octal_output = self.binary_to_octal(binary_representation)
         print(octal_output)
 
-    def decimal_to_hex(self):
-        pass
-    
+    def decimal_to_hex(self, raw_decimal_input):
+        binary_representation = self.decimal_to_binary(raw_decimal_input) 
+        hex_output = self.binary_to_hex(binary_representation)
+        print(hex_output)
+
     def decimal_to_BCD(self):
         pass
 
@@ -84,8 +49,13 @@ class Converter:
         pass
 
     def binary_to_octal(self, raw_binary_input):
-        conversions = self.read_cheat_sheet('Octal_Cheat_Sheet.csv')
-        binary_input = list(raw_binary_input)
+        conversions = self.read_cheat_sheet('CSV Files\Octal_Cheat_Sheet.csv')
+        raw_binary_input = list(raw_binary_input)
+        binary_input = [] 
+
+        for binary_digit in raw_binary_input:
+            if (binary_digit != ' '):
+                binary_input.append(binary_digit)
 
         if len(binary_input) in [2, 5, 8]:
             binary_input = ['0'] + binary_input
@@ -100,15 +70,43 @@ class Converter:
         for index in range(0, len(binary_string), 3):
             binary_split_string.append(binary_string[index : index + 3])
 
-        for conversion_pair in conversions:
-            for binary_group in binary_split_string:
+        for binary_group in binary_split_string:
+            for conversion_pair in conversions:
                 if str(binary_group) in conversion_pair['key']:
                     octal_output.append(conversion_pair['value'])
-
+            
         return ''.join(octal_output)
             
-    def binary_to_hex(self):
-        pass
+    def binary_to_hex(self, raw_binary_input):
+        conversions = self.read_cheat_sheet('CSV Files\Hex_Cheat_Sheet.csv')
+        raw_binary_input = list(raw_binary_input)
+        binary_input = []
+
+        for binary_digit in raw_binary_input:
+            if (binary_digit != ' '):
+                binary_input.append(binary_digit)
+
+        if len(binary_input) in [3, 7, 11, 15]:
+            binary_input = ['0'] + binary_input
+        elif len(binary_input) in [2, 6, 10, 14]:
+            binary_input = ['0', '0'] + binary_input
+        elif len(binary_input) in [1, 5, 9, 13]:
+            binary_input = ['0', '0', '0'] + binary_input
+
+        binary_string = ''
+        binary_split_string = []
+        hex_output = []
+
+        binary_string = (binary_string.join(binary_input))
+        for index in range(0, len(binary_string), 4):
+            binary_split_string.append(binary_string[index : index + 4])
+
+        for binary_group in binary_split_string:
+            for conversion_pair in conversions:
+                if binary_group in conversion_pair['key']:
+                    hex_output.append(conversion_pair['value']) 
+
+        return ''.join(hex_output)  
 
     def octal_to_decimal(self):
         pass
@@ -140,4 +138,4 @@ class View:
 class Controller:
     pass
 
-Converter().decimal_to_octal('46')
+Converter().decimal_to_hex('121')

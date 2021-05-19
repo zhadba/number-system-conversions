@@ -1,5 +1,5 @@
 This is a repository designed for the purpose of easing the conversion between commonly
-applicational number systems. There should exist two primary .py files that contain functionality for
+applicational number systems. There should exist two primary python files that contain functionality for
 conversions between:
 
  - Any decimal number between 0 and 255 into binary.
