@@ -11,6 +11,8 @@ conversions between:
  - Any binary number between 0 and 1111 1111 1111 1111 into hex.
  - Any octal number between 0 and 777 into decimal.
  - Any octal number between 0 and 777 into binary.
+ - Any hex number between 0 and FFFF into decimal.
+ - Any hex number between 0 and FF into binary.
  - Any BCD representation from 0 to 1001 1001 1001 1001 into decimal.
  - Any Alphanumeric representation from A-Z and 0-9 into ASCII 7-bit code.
  - Any ASCII 7-bit code into Alphanumeric representation.
