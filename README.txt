@@ -4,7 +4,7 @@ conversions between:
 
  - Any decimal number between 0 and 255 into binary.
  - Any decimal number between 0 and 511 into octal.
- - Any decimal number between 0 and 65535 into hex.
+ - Any decimal number between 0 and 255 into hex.
  - Any decimal number between 0 and 9999 into BCD.
  - Any binary number between 0 and 1111 1111 into decimal.
  - Any binary number between 0 and 111 111 111 into octal.
