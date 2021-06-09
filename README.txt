@@ -1,6 +1,6 @@
 This is a repository designed for the purpose of easing the conversion between commonly
 applicational number systems. There should exist two primary python files that contain functionality for
-conversions between:
+conversions, including:
 
  - Any decimal number between 0 and 255 into binary.
  - Any decimal number between 0 and 511 into octal.
@@ -20,4 +20,5 @@ conversions between:
 The second primary file is designed to employ a parity error detection method for any 
 7-bit code. Accepts odd or even parity.
 
-The remaining files in this repository are designed to aid the conversion/error detection process.
+The remaining files in this repository are designed to aid the conversion/error detection process 
+and are necessary for the conversion program.
