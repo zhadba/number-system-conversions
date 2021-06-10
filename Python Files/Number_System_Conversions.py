@@ -1,13 +1,5 @@
 import csv
 
-class Number:
-    
-    def __init__(self, numerical_input):
-        self.numerical_input = numerical_input
-
-    def __str__(self):
-        return f'Numeric input: {self.numerical_input}' 
-
 class SystemConverter:
     
     def __init__(self):
@@ -44,7 +36,6 @@ class SystemConverter:
         self.numeric_output = []
         binary_representation = self.decimal_to_binary(user_input)
         self.numeric_output = self.binary_to_octal(binary_representation)
-        print(self.numeric_output)
 
         return self.numeric_output
 
@@ -64,9 +55,8 @@ class SystemConverter:
             for conversion_pair in conversions:
                 if digit in conversion_pair['key']:
                     self.numeric_output.append(conversion_pair['value'])
-        print (self.numeric_output)
 
-        return self.numeric_output
+        return ''.join(self.numeric_output)
 
     def binary_to_decimal(self, user_input):
         raw_binary_input = list(user_input)
@@ -95,7 +85,7 @@ class SystemConverter:
             for k, v in conversion_map.items():
                 conversion = (int(k) * int(v))
                 self.numeric_output.append(conversion)
-        print(sum(self.numeric_output))
+
         return sum(self.numeric_output)
 
     def binary_to_octal(self, user_input):
@@ -167,7 +157,7 @@ class SystemConverter:
         elif len(octal_input) == 1:
             octal_input = ['0','0'] + octal_input
 
-        self.numeric_output = (int(octal_input[0]) * (8**2)) + (int(octal_input[1]) * (8**1)) + (int(octal_input[2]) * (8**0))
+        self.numeric_output = (int(octal_input[0]) * (8**2)) + (int(octal_input[1]) * (8)) + (int(octal_input[2]))
         return self.numeric_output
 
     def octal_to_binary(self, user_input):
@@ -201,29 +191,314 @@ class SystemConverter:
             raw_hex_input = ['0', '0', '0'] + raw_hex_input
 
         for digit in raw_hex_input:
+            if digit in ['0','1','2','3','4','5','6','7','8','9']:
+                hex_input.append(digit)
             for conversion in conversions:
                 if digit in conversion['value']:
-                    
-
+                    hex_input.append(conversion['key'])
+        
+        self.numeric_output = (int(hex_input[0]) * (16**3)) + (int(hex_input[1]) * (16**2)) + (int(hex_input[2]) * (16)) + (int(hex_input[3]))
+        return self.numeric_output
+        
     def hex_to_binary(self, user_input):
-        pass
+        conversions = self.read_cheat_sheet('CSV Files\Hex_Cheat_Sheet.csv')
+        hex_input = list(user_input)
+        self.numeric_output = []
+
+        for digit in hex_input:
+            for conversion in conversions:
+                if digit in conversion['value']:
+                    self.numeric_output.append(conversion['key'])
+
+        return ''.join(self.numeric_output)
 
     def BCD_to_decimal(self, user_input):
-        pass
+        conversions = self.read_cheat_sheet('CSV Files\BCD_Cheat_Sheet.csv')
+        raw_BCD_input = list(user_input)
+        BCD_input = []
+        self.numeric_output = []
+
+        for BCD_digit in raw_BCD_input:
+            if (BCD_digit != ' '):
+                BCD_input.append(BCD_digit)
+
+        if len(BCD_input) in [3, 7, 11, 15]:
+            BCD_input = ['0'] + BCD_input
+        elif len(BCD_input) in [2, 6, 10, 14]:
+            BCD_input = ['0', '0'] + BCD_input
+        elif len(BCD_input) in [1, 5, 9, 13]:
+            BCD_input = ['0', '0', '0'] + BCD_input
+
+        BCD_string = ''
+        BCD_split_string = []
+
+        BCD_string = (BCD_string.join(BCD_input))
+        for index in range(0, len(BCD_string), 4):
+            BCD_split_string.append(BCD_string[index : index + 4])
+
+        for BCD_group in BCD_split_string:
+            for conversion_pair in conversions:
+                if BCD_group in conversion_pair['value']:
+                    self.numeric_output.append(conversion_pair['key'])
+
+        return ''.join(self.numeric_output)
 
     def alpha_to_ASCII(self, user_input):
-        pass
+        conversions = self.read_cheat_sheet('CSV Files\ASCII_Cheat_Sheet.csv')
+        raw_alpha_input = list(user_input)
+        alpha_input = []
+        self.numeric_output = []
+
+        for letter in raw_alpha_input:
+            if (letter == ' '):
+                alpha_input.append('blank')
+            else:
+                alpha_input.append(letter)
+
+        for letter in alpha_input:
+            for conversion in conversions:
+                if letter in conversion['key']:
+                    self.numeric_output.append(conversion['value'])
+
+        return self.numeric_output
 
     def ASCII_to_alpha(self, user_input):
-        pass
+        conversions = self.read_cheat_sheet('CSV Files\ASCII_Cheat_Sheet.csv')
+        ASCII_input = user_input
+        self.numeric_output = []
+        
+        for conversion in conversions:
+            if ASCII_input in conversion['value']:
+                self.numeric_output.append(conversion['key'])
+
+        return self.numeric_output
+
 
 class Menu:
-    pass
+    
+    def __init__(self, menu_options):
+        self.options = menu_options
 
+    def show_menu(self):
+        for number,choice in self.options.items():
+            if (number != ' '):
+                print(f"{number}: {choice['description']}")
+            else:
+                print(f"{choice['description']}")    
+
+    def receive_menu_choice(self):
+        choice_validity = False
+        while not choice_validity:
+            menu_choice = input('Please input the number that corresponds with your choice: ')
+            if menu_choice in self.options.keys():
+                choice_validity = True
+                return menu_choice
+            else: 
+                print('That choice does not exist')
+
+    def capitalize_alpha_characters(self, user_input):
+        capitalized_input = []
+        for item in list(user_input):
+            if item.isalpha():
+                capitalized_input.append(item.upper())
+            elif item.isdigit():
+                capitalized_input.append(item)
+        
+        return ''.join(capitalized_input)
+
+    def receive_decimal_input(self, length_limitation, content_limitation):
+        input_validity = False
+        while not input_validity:
+            user_input = input('Please enter a numeric input to convert: ')
+            if len(list(user_input)) <= length_limitation:
+                if user_input in content_limitation:
+                    input_validity = True
+                    return user_input
+                else:
+                    print('Invalid content. Please check that the appropriate system is chosen')
+            else:
+                print('Invalid length. Please check parameters for input')
+    
+    def receive_non_decimal_input(self, length_limitation, content_limitation):
+        input_validity = False
+        while not input_validity:
+            user_input = input('Please enter an alphanumeric OR mixed input to convert: ')
+            if len(list(user_input)) <= length_limitation:
+                for item in list(user_input):
+                    if item in content_limitation:
+                        input_validity = True
+                        return user_input
+                    else:
+                        print('Invalid content. Please check that the appropriate system is chosen')
+            else:
+                print('Invalid length. Please check parameters for input')
+    
+                    
 class View:
-    pass
+    
+    def __init__(self):
+        self.printable_input = []
+        self.printable_output = []
+
+    def print_output(self, printable_input, printable_output):
+        if printable_output and printable_input:
+            self.printable_output = printable_output
+            print(f'\nINPUT: {printable_input}\nOUTPUT: {printable_output}')
+        else:
+            print('No input, therefore no output')
+
 
 class Controller:
-    pass
+    
+    def __init__(self):
+        self.menu = Menu({})
+        self.view = View()
+        self.converter = SystemConverter()
+        self.running = True
+    
+        self.menu_options = {
+            ' ': {'description': '\nSelect the parent system of the number you wish to input:', 'action': None},
+            '1': {'description': 'Decimal', 'action': lambda: self.show_decimal_menu()},
+            '2': {'description': 'Binary', 'action': lambda: self.show_binary_menu()},
+            '3': {'description': 'Octal', 'action': lambda: self.show_octal_menu()},
+            '4': {'description': 'Hexadecimal', 'action': lambda: self.show_hex_menu()},
+            '5': {'description': 'BCD', 'action': lambda: self.show_BCD_menu()},
+            '6': {'description': 'Alphanumeric', 'action': lambda: self.show_alpha_menu()},
+            '7': {'description': 'ASCII', 'action': lambda: self.show_ASCII_menu()},
+            '8': {'description': 'Quit', 'action': lambda: self.terminate_program()}}
 
-SystemConverter().hex_to_decimal('ABCD')
+        self.decimal_menu_options = {
+            ' ': {'description': '\nSelect the system that you wish to convert to:', 'action': None},
+            '1': {'description': 'Decimal --> Binary', 'action': lambda: self.convert_decimal_to_binary()},
+            '2': {'description': 'Decimal --> Octal', 'action': lambda: self.convert_decimal_to_octal()},
+            '3': {'description': 'Decimal --> Hexadecimal', 'action': lambda: self.convert_decimal_to_hex()},
+            '4': {'description': 'Decimal --> BCD', 'action': 'TBD'},
+            '5': {'description': 'Return to Menu', 'action': lambda: self.run()}}
+
+        self.binary_menu_options = {
+            ' ': {'description': '\nSelect the system that you wish to convert to:', 'action': None},
+            '1': {'description': 'Binary --> Decimal', 'action': 'TBD'},
+            '2': {'description': 'Binary --> Octal', 'action': 'TBD'},
+            '3': {'description': 'Binary --> Hexadecimal', 'action': 'TBD'},
+            '4': {'description': 'Return to Menu', 'action': lambda: self.run()}}
+
+        self.octal_menu_options = {
+            ' ': {'description': '\nSelect the system that you wish to convert to:', 'action': None},
+            '1': {'description': 'Octal --> Decimal', 'action': 'TBD'},
+            '2': {'description': 'Octal --> Binary', 'action': 'TBD'},
+            '3': {'description': 'Return to Menu', 'action': lambda: self.run()}}
+
+        self.hex_menu_options = {
+            ' ': {'description': '\nSelect the system that you wish to convert to:', 'action': None},
+            '1': {'description': 'Hexadecimal --> Decimal', 'action': 'TBD'},
+            '2': {'description': 'Hexadecimal --> Binary', 'action': 'TBD'},
+            '3': {'description': 'Return to Menu', 'action': lambda: self.run()}}
+
+        self.BCD_menu_options = {
+            ' ': {'description': '\nSelect the system that you wish to convert to:', 'action': None},
+            '1': {'description': 'BCD --> Decimal', 'action': 'TBD'},
+            '2': {'description': 'Return to Menu', 'action': lambda: self.run()}}
+
+        self.alpha_menu_options = {
+            ' ': {'description': '\nSelect the system that you wish to convert to:', 'action': None},
+            '1': {'description': 'Alphanumeric --> ASCII', 'action': 'TBD'},
+            '2': {'description': 'Return to Menu', 'action': lambda: self.run()}}
+
+        self.ASCII_menu_options = {
+            ' ': {'description': '\nSelect the system that you wish to convert to:', 'action': None},
+            '1': {'description': 'ASCII --> Alphanumeric', 'action': 'TBD'},
+            '2': {'description': 'Return to Menu', 'action': lambda: self.run()}}
+
+    def run(self):
+        self.menu = Menu(self.menu_options)
+        while self.running:
+            self.menu.show_menu()
+            menu_choice = self.menu.receive_menu_choice()
+            self.menu_options.get(menu_choice)['action']()
+
+    def show_decimal_menu(self):
+        self.menu = Menu(self.decimal_menu_options)
+        while self.running:
+            self.menu.show_menu()
+            menu_choice = self.menu.receive_menu_choice()
+            self.decimal_menu_options.get(menu_choice)['action']()
+
+    def show_binary_menu(self):
+        self.menu = Menu(self.binary_menu_options)
+        while self.running:
+            self.menu.show_menu()
+            menu_choice = self.menu.receive_menu_choice()
+            self.binary_menu_options.get(menu_choice)['action']()
+
+    def show_octal_menu(self):
+        self.menu = Menu(self.octal_menu_options)
+        while self.running:
+            self.menu.show_menu()
+            menu_choice = self.menu.receive_menu_choice()
+            self.octal_menu_options.get(menu_choice)['action']()
+
+    def show_hex_menu(self):
+        self.menu = Menu(self.hex_menu_options)
+        while self.running:
+            self.menu.show_menu()
+            menu_choice = self.menu.receive_menu_choice()
+            self.hex_menu_options.get(menu_choice)['action']()
+
+    def show_BCD_menu(self):
+        self.menu = Menu(self.BCD_menu_options)
+        while self.running:
+            self.menu.show_menu()
+            menu_choice = self.menu.receive_menu_choice()
+            self.BCD_menu_options.get(menu_choice)['action']()
+
+    def show_alpha_menu(self):
+        self.menu = Menu(self.alpha_menu_options)
+        while self.running:
+            self.menu.show_menu()
+            menu_choice = self.menu.receive_menu_choice()
+            self.alpha_menu_options.get(menu_choice)['action']()
+
+    def show_ASCII_menu(self):
+        self.menu = Menu(self.ASCII_menu_options)
+        while self.running:
+            self.menu.show_menu()
+            menu_choice = self.menu.receive_menu_choice()
+            self.ASCII_menu_options.get(menu_choice)['action']()
+
+    def convert_decimal_to_binary(self):
+        length_limitation = 3
+        content_limitation = []
+        for number in list(range(256)):
+            content_limitation.append(str(number))
+
+        user_input = self.menu.receive_decimal_input(length_limitation, content_limitation)
+        printable_output = self.converter.decimal_to_binary(user_input)
+        self.view.print_output(user_input, printable_output)
+
+    def convert_decimal_to_octal(self):
+        length_limitation = 3
+        content_limitation = []
+        for number in list(range(512)):
+            content_limitation.append(str(number))
+
+        user_input = self.menu.receive_decimal_input(length_limitation, content_limitation)
+        printable_output = self.converter.decimal_to_octal(user_input)
+        self.view.print_output(user_input, printable_output)
+
+    def convert_decimal_to_hex(self):
+        length_limitation = 5
+        content_limitation = []
+        for number in list(range(65536)):
+            content_limitation.append(str(number))
+
+        user_input = self.menu.receive_decimal_input(length_limitation, content_limitation)
+        printable_output = self.converter.decimal_to_hex(user_input)
+        self.view.print_output(user_input, printable_output)
+    
+    def terminate_program(self):
+        self.running = False
+        quit()
+
+if __name__ == '__main__':
+    conversion_program = Controller()
+    conversion_program.run()
